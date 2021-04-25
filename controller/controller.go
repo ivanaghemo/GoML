@@ -32,7 +32,7 @@ func PostTopSecrets(c *gin.Context) {
 			"status": "failed",
 			"error":  "El mensaje es ilegible.",
 		})
-		return 
+		return
 
 	}
 
@@ -47,8 +47,61 @@ func PostTopSecrets(c *gin.Context) {
 			"error":  "No se puede obtener datos: " + err.Error(),
 		})
 		return
-	} else {
-		c.JSON(http.StatusOK, res)
+	}
+
+	c.JSON(http.StatusOK, res)
+	return
+
+}
+
+func PostTopSecretSplit(c *gin.Context) {
+
+	var (
+		secretRequest  = structs.TopSecretRequestSplit{}
+		nombreSatelite = c.Param("satellite_name")
+	)
+
+	if err := c.Bind(&secretRequest); err != nil {
+		log.Printf("El mensaje TopSecretRequestSplit no se puede leer: %s", err.Error())
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
+			"error":  "El mensaje TopSecretRequestSplit no se puede leer: " + err.Error(),
+		})
 		return
 	}
+
+	log.Println("[START] PostTopSecretSplit con..", secretRequest)
+
+	res, err := services.TopSecretSplitPostService(nombreSatelite, secretRequest)
+
+	if err != nil {
+		log.Println("[PostTopSecretSplit] No se pueden obtener los datos." + err.Error())
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": "failed",
+			"error":  "No se puede obtener datos: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+	return
+
+}
+
+func GetTopSecretSplit(c *gin.Context) {
+
+	log.Println("[START] GetTopSecretSplit..")
+
+	res, err := services.TopSecretSplitGetService()
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": "failed",
+			"error":  "No se puede obtener datos: " + err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, res)
+
 }
