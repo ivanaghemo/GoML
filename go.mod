@@ -1,4 +1,4 @@
-module main.go
+module github.com/ivanaghemo/GoML
 
 go 1.16
 
