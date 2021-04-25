@@ -76,19 +76,24 @@ func TopSecretSplitPostService(nombreSatelite string, req structs.TopSecretReque
 		Message: fmt.Sprintf("Ok"),
 	}
 
+	c.Delete(cachekey)
+
 	return &res, nil
 }
 
 func TopSecretSplitGetService() (*structs.TopSecretResponse, error) {
-
 	//cache
 	if x, found := c.Get(cachekey); found {
 		ress := x.(*structs.TopSecretResponse)
 		log.Println("Cache...")
 		return ress, nil
 	}
-
 	satelites := operations.GetSatelitesOnlineSplit()
+
+	if len(satelites) < 3 {
+		msg := fmt.Errorf("No se ha podido conectar con los satélites")
+		return nil, msg
+	}
 
 	distances, msgs := operations.ObtenerMensajeYDistancia(satelites)
 
