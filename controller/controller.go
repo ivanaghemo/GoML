@@ -32,7 +32,7 @@ func PostTopSecrets(c *gin.Context) {
 			"status": "failed",
 			"error":  "El mensaje es ilegible.",
 		})
-		return
+		return 
 
 	}
 
