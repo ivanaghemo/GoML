@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	services "github.com/ivanaghemo/GOGin/services"
-	structs "github.com/ivanaghemo/GOGin/structs"
+	services "github.com/ivanaghemo/GoML/services"
+	structs "github.com/ivanaghemo/GoML/structs"
 )
 
 func PostTopSecrets(c *gin.Context) {
