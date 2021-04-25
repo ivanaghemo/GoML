@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	controller "main.go/controller"
+	controller "github.com/ivanaghemo/GoML/controller"
 )
 
 func main() {
