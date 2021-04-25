@@ -11,16 +11,19 @@ import (
 
 func main() {
 	port := os.Getenv("PORT")
+
 	if port == "" {
 		port = "8080"
 	}
+
 	router := gin.New()
 
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Bienvenidos : Operación Fuego de Quasar!")
 	})
 	router.POST("/topsecret", controller.PostTopSecrets)
-
+	router.POST("/topsecret_split/:satellite_name", controller.PostTopSecretSplit)
+	router.GET("/topsecret_split", controller.GetTopSecretSplit)
 	router.Run(":" + port)
 
 	log.Println("Listening..." + port)
