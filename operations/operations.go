@@ -100,36 +100,6 @@ func normalize(point structs.Point) float32 {
 	return float32(math.Pow(math.Pow(float64(point.X), 2)+math.Pow(float64(point.Y), 2), .5))
 }
 
-/*
-func validarSatelites(satellites []structs.Satellite) bool {
-
-	if len(satellites) < 3 {
-		return false
-	}
-
-	d1 := Distancia(satellites[0].Location, satellites[1].Location)
-
-	if d1 > satellites[0].Distance+satellites[1].Distance {
-		return false
-	}
-
-	d2 := Distancia(satellites[1].Location, satellites[2].Location)
-	if d2 > satellites[1].Distance+satellites[2].Distance {
-		return false
-	}
-
-	d3 := Distancia(satellites[0].Location, satellites[2].Location)
-
-	return !(d3 > satellites[0].Distance+satellites[2].Distance)
-
-}
-
-func distancia(p1, p2 structs.Point) float32 {
-	X := math.Pow(float64(p1.X-p2.X), 2)
-	Y := math.Pow(float64(p1.Y-p2.Y), 2)
-	return float32(math.Sqrt(X + Y))
-}
-*/
 func GetMessage(messages ...[]string) (msg string) {
 
 	if len(messages) < 1 {
@@ -283,4 +253,53 @@ func trilateracion(satelites []structs.Satellite) (x, y float32, err error) {
 	y = float32(math.Pow(float64(d1), 2)-math.Pow(float64(d3), 2)+math.Pow(float64(i), 2)+math.Pow(float64(j), 2))/(2*j) - (i*x)/j
 
 	return x, y, nil
+}
+
+func ObtenerUnSatelite(nombreSatelite string) (structs.Satellite, error) {
+	return BuscarSatelitePorNombre(nombreSatelite, onlineSatelites)
+}
+
+func MofificarSatelite(sateliteModificado structs.Satellite) []structs.Satellite {
+	nuevoSateltite := []structs.Satellite{}
+
+	for _, s := range onlineSatelites {
+		if s.Name == sateliteModificado.Name {
+			s = sateliteModificado
+		}
+
+		nuevoSateltite = append(nuevoSateltite, s)
+	}
+
+	onlineSatelites = nuevoSateltite
+
+	return onlineSatelites
+}
+
+func BuscarSatelitePorNombre(nombreSatelite string, satelites []structs.Satellite) (structs.Satellite, error) {
+
+	for _, s := range satelites {
+		if s.Name == nombreSatelite {
+			return s, nil
+		}
+	}
+
+	err := fmt.Errorf("Satélite %s no existe", nombreSatelite)
+
+	return structs.Satellite{}, err
+}
+
+func GetSatelitesOnlineSplit() []structs.Satellite {
+
+	return onlineSatelites
+}
+
+func GetLocationSplit(distances ...float32) (x, y float32) {
+
+	x, y, err := trilateracion(onlineSatelites)
+
+	if err != nil {
+		return 0, 0
+	}
+
+	return x, y
 }
